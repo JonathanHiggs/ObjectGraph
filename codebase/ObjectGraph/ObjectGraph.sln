@@ -5,6 +5,8 @@ VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ObjectGraph", "ObjectGraph\ObjectGraph.csproj", "{2D57CDF9-9A2B-4DEB-9C80-21AF7B85B1EA}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sandbox", "Sandbox\Sandbox.csproj", "{E29A4E9A-6AA8-42FC-832F-E335B856C050}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +17,10 @@ Global
 		{2D57CDF9-9A2B-4DEB-9C80-21AF7B85B1EA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2D57CDF9-9A2B-4DEB-9C80-21AF7B85B1EA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2D57CDF9-9A2B-4DEB-9C80-21AF7B85B1EA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E29A4E9A-6AA8-42FC-832F-E335B856C050}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E29A4E9A-6AA8-42FC-832F-E335B856C050}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E29A4E9A-6AA8-42FC-832F-E335B856C050}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E29A4E9A-6AA8-42FC-832F-E335B856C050}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

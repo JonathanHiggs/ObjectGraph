@@ -40,13 +40,43 @@ namespace ObjectGraph
 
         public TVal GetValue<TObj, TVal>(StaticProperty<TObj, TVal> property, Node node, int minDepth = 1) where TObj : GraphObject
         {
+            var result = Get(property, node, minDepth);
+
+            if (null != result)
+                return (TVal)result;
+            else
+                return property.Default;
+        }
+
+
+        public Func<TObj, TVal> GetValue<TObj, TVal>(DerrivedProperty<TObj, TVal> property, int minDepth) where TObj : GraphObject
+        {
+            return GetValue(property, graph.CurrentNode, minDepth);
+        }
+
+
+        public Func<TObj, TVal> GetValue<TObj, TVal>(DerrivedProperty<TObj, TVal> property, Node node, int minDepth = 1) where TObj : GraphObject
+        {
+            var result = Get(property, node, minDepth);
+
+            if (null != result)
+                return (Func<TObj, TVal>)result;
+            else
+                return property.Default;
+        }
+
+
+        private object Get(Property property, Node node, int minDepth)
+        {
             if (valueStackByProperty.ContainsKey(property))
             {
                 var valueStack = valueStackByProperty[property];
 
-                return (TVal)valueStack[node.Stack.Where(n => n.Depth >= minDepth).First(n => valueStack.ContainsKey(n))];
+                foreach (var checkNode in node.Stack.Where(n => n.Depth >= minDepth))
+                    if (valueStack.ContainsKey(checkNode))
+                        return valueStack[checkNode];
             }
-            return property.Default;
+            return null;
         }
         #endregion
 
@@ -55,11 +85,48 @@ namespace ObjectGraph
         [DebuggerStepThrough]
         public void SetValue<TObj, TVal>(StaticProperty<TObj, TVal> property, TVal value) where TObj : GraphObject
         {
-            SetValue(property, graph.CurrentNode, value);
+            Set(property, graph.CurrentNode, value);
         }
 
 
+        [DebuggerStepThrough]
         public void SetValue<TObj, TVal>(StaticProperty<TObj, TVal> property, Node node, TVal value) where TObj : GraphObject
+        {
+            Set(property, node, value);
+        }
+
+
+        [DebuggerStepThrough]
+        public void SetValue<TObj, TVal>(DerrivedProperty<TObj, TVal> property, TVal value) where TObj : GraphObject
+        {
+            Func<TObj, TVal> func = o => value;
+            Set(property, graph.CurrentNode, func);
+        }
+
+
+        [DebuggerStepThrough]
+        public void SetValue<TObj, TVal>(DerrivedProperty<TObj, TVal> property, Node node, TVal value) where TObj : GraphObject
+        {
+            Func<TObj, TVal> func = o => value;
+            Set(property, node, func);
+        }
+
+
+        [DebuggerStepThrough]
+        public void SetValue<TObj, TVal>(DerrivedProperty<TObj, TVal> property, Func<TObj, TVal> func) where TObj : GraphObject
+        {
+            Set(property, graph.CurrentNode, func);
+        }
+
+
+        [DebuggerStepThrough]
+        public void SetValue<TObj, TVal>(DerrivedProperty<TObj, TVal> property, Node node, Func<TObj, TVal> func) where TObj : GraphObject
+        {
+            Set(property, node, func);
+        }
+
+
+        private void Set(Property property, Node node, Object value)
         {
             if (!valueStackByProperty.ContainsKey(property))
                 valueStackByProperty.Add(property, new Dictionary<Node, object>());
@@ -102,6 +169,14 @@ namespace ObjectGraph
         protected static StaticProperty<TObj, TVal> RegisterProperty<TObj, TVal>(Expression<Func<TObj, TVal>> property, TVal defaultValue) where TObj : GraphObject
         {
             var graphProperty = new StaticProperty<TObj, TVal>(property, defaultValue);
+            propertyRegister.RegisterProperty<TObj>(graphProperty);
+            return graphProperty;
+        }
+
+
+        protected static DerrivedProperty<TObj, TVal> RegisterProperty<TObj, TVal>(Expression<Func<TObj, TVal>> property, Func<TObj, TVal> defaultDelegate, IEnumerable<Property> dependentProperties) where TObj : GraphObject
+        {
+            var graphProperty = new DerrivedProperty<TObj, TVal>(property, defaultDelegate, dependentProperties);
             propertyRegister.RegisterProperty<TObj>(graphProperty);
             return graphProperty;
         }

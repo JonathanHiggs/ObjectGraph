@@ -142,8 +142,8 @@ namespace ObjectGraph
             {
                 if (disposing)
                 {
-                    foreach (var node in allNodes)
-                        node.Dispose();
+                    while (allNodes.Any())
+                        allNodes.First().Dispose();
                 }
 
                 disposedValue = true;
